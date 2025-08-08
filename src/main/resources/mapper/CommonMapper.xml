@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bluewavetel.dao">
+    <select id="CommonMapper_selectTypeInfo" parameterType="com.bluewavetel.dto.common.TypeDto" resultType="com.bluewavetel.dto.common.TypeDto">
+    SELECT
+    	TYPE_CD,
+    	TYPE_NAME,
+   	<if test="category.equals('BOARD_TYPE') or category.equals('CATEGORY_TYPE')">
+    	TYPE_ENG_NAME,
+   	</if>
+    	USE_YN
+    FROM ${category}
+    WHERE USE_YN = 'Y'
+   	<if test="typeCd != null and !typeCd.equals('')">
+   		AND TYPE_CD = #{typeCd}
+   	</if>
+   	<if test="typeName != null and !typeName.equals('')">
+   		AND TYPE_NAME = #{typeName}
+   	</if>
+   	<if test="typeEngName != null and !typeEngName.equals('')">
+   		AND TYPE_ENG_NAME = #{typeEngName}
+   	</if>
+   	<if test="typeRank != null and !typeRank.equals('')">
+   		AND TYPE_RANK = #{typeRank}
+   	</if>
+   	<if test="useYn != null and !useYn.equals('')">
+   		AND USE_YN = #{useYn}
+   	</if>
+  </select>
+</mapper>

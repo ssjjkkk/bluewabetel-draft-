@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bluewavetel.dao">
+
+  <select id="LoginMapper_checkUserLogin" parameterType="com.bluewavetel.dto.UserDto" resultType="Integer">
+  /** LoginMapper_checkUserLogin */
+  
+    SELECT COUNT(USER_NAME)
+      FROM USER
+     WHERE 1=1
+   	<if test="userId != null and !userId.equals('')">
+       AND USER_ID = #{userId}
+    </if>
+   	<if test="userPw != null and !userPw.equals('')">
+       AND USER_PW = #{userPw}
+    </if>
+    
+  </select>
+  
+  <select id="LoginMapper_selectUserById" parameterType="String" resultType="com.bluewavetel.dto.UserDto">
+  /** LoginMapper_selectUserById */
+  
+  	SELECT * FROM USER
+  	WHERE USER_ID = #{userId}
+  	AND DEL_YN = 'N'
+  	
+  </select>
+  
+  <select id="LoginMapper_selectUserList" resultType="com.bluewavetel.dto.UserDto">
+  /** LoginMapper_selectUserList */
+  
+  	SELECT
+  		A.*,
+  		(SELECT X.TYPE_NAME FROM USER_TYPE X WHERE A.USER_TYPE_CD = X.TYPE_CD) USER_TYPE_NM
+  	FROM USER A
+  	WHERE A.DEL_YN = 'N'
+  	
+  </select>
+  
+  <select id="LoginMapper_selectNewUserUid" resultType="String">
+  /** LoginMapper_selectNewUserUid */
+  
+  	SELECT LPAD((COALESCE(MAX(USER_UID),"00000")+1),6,'0') AS NEW_USER_UID
+  	FROM USER
+  	
+  </select>
+  
+   <insert id="LoginMapper_userJoin" parameterType="com.bluewavetel.dto.UserDto">
+  /** LoginMapper_userJoin */
+  
+	INSERT INTO USER (
+		USER_UID,
+		USER_ID,
+		USER_TYPE_CD,
+		USER_NAME,
+		USER_NICK_NAME,
+		USER_PW,
+		USER_JOIN_DATE,
+		USER_MODI_DATE,
+		DEL_YN
+	) VALUES (
+		#{userUid},
+		#{userId},
+		#{userTypeCd},
+		#{userName},
+		#{userNickName},
+		#{userPw},
+		CURRENT_TIMESTAMP(),
+		CURRENT_TIMESTAMP(),
+		'N'
+	)
+	
+  </insert>
+  
+  <update id="LoginMapper_updateUserInfo" parameterType="com.bluewavetel.dto.UserDto">
+  /** LoginMapper_updateUserInfo */
+  
+  	UPDATE USER
+	   SET
+	   <if test="userTypeCd != null and !userTypeCd.equals('')">
+	   USER_TYPE_CD = #{userTypeCd},
+	   </if>
+	   <if test="userName != null and !userName.equals('')">
+	   USER_NAME = #{userName},
+	   </if>
+	   <if test="userNickName != null and !userNickName.equals('')">
+	   USER_NICK_NAME = #{userNickName},
+	   </if>
+	   <if test="userPw != null and !userPw.equals('')">
+	   USER_PW = #{userPw},
+	   </if>
+	   <if test="userImg != null and !userImg.equals('')">
+	   USER_IMG = #{userImg},
+	   </if>
+	   USER_MODI_DATE = CURRENT_TIMESTAMP(),
+	   DEL_YN = #{delYn}
+	 WHERE USER_UID = #{userUid}
+	 
+  </update>
+
+</mapper>

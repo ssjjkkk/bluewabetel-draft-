@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bluewavetel.dao">
+
+  <select id="UserMapper_selectUserByUid" parameterType="String" resultType="com.bluewavetel.dto.UserDto">
+    SELECT
+    	USER_UID,
+    	USER_ID,
+    	USER_TYPE_CD,
+    	(SELECT X.USER_TYPE_NAME FROM USER_TYPE X WHERE X.USER_TYPE_CD = USER_TYPE_CD) AS USER_TYPE_NM,
+    	USER_NAME,
+    	USER_NICK_NAME,
+    	COMPANY_ID,
+    	USER_CELL,
+    	USER_IMG,
+    	USER_JOIN_DATE,
+    	USER_MODI_DATE,
+    	DEL_YN
+      FROM USER
+     WHERE 1=1
+   	<if test="userUid != null and !userUid.equals('')">
+       AND USER_UID = #{userUid}
+    </if>
+  </select>
+</mapper>

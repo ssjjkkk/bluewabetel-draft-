@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bluewavetel.dao">
+
+   <insert id="BoardMapper_insertBoard" parameterType="com.bluewavetel.dto.BoardDto" useGeneratedKeys="true" keyProperty="boardId">
+    /** BoardMapper_insertBoard */
+    
+	INSERT INTO BOARD (
+		USER_UID,
+		BOARD_TYPE_CD,
+		CATEGORY_TYPE_CD,
+		TITLE,
+		TITLE_ENG,
+		SUB_TITLE,
+		CONTENT,
+		CONTENT_TXT,
+		CONTENT_ENG,
+		CONTENT_ENG_TXT,
+		THUMNAIL_IMG,
+		URL1,
+		URL2,
+		KEYWORD,
+		VIEW_CNT,
+		SCRAP_CNT,
+		MAIN_YN,
+		PRODUCT_DESC,
+		PRODUCT_DESC_ENG,
+		WRITER,
+		WRITER_PHONE,
+		WRITER_MAIL,
+		WRITER_COMPANY,
+		DEL_YN,
+		REG_USER_UID,
+		REG_TIME,
+		MODI_USER_UID,
+		MODI_TIME
+	) VALUES (
+		COALESCE(#{userUid}, '000001'),
+		#{boardTypeCd},
+		#{categoryTypeCd},
+		#{title},
+		#{titleEng},
+		#{subTitle},
+		#{content},
+		#{contentTxt},
+		#{contentEng},
+		#{contentEngTxt},
+		#{thumnailImg},
+		#{url1},
+		#{url2},
+		#{keyword},
+		#{viewCnt},
+		#{scrapCnt},
+		#{mainYn},
+		#{productDesc},
+		#{productDescEng},
+		#{writer},
+		#{writerPhone},
+		#{writerMail},
+		#{writerCompany},
+		'N',
+		COALESCE(#{userUid}, '000001'),
+		COALESCE(#{regTime}, CURRENT_TIMESTAMP()),
+		COALESCE(#{userUid}, '000001'),
+		CURRENT_TIMESTAMP()
+	)
+	
+  </insert>
+  
+  <update id="BoardMapper_updateBoard" parameterType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_updateBoard */
+    
+  	UPDATE BOARD
+	SET 
+		MODI_TIME = CURRENT_TIMESTAMP()
+		, BOARD_TYPE_CD = #{boardTypeCd}
+		, CATEGORY_TYPE_CD = #{categoryTypeCd}
+		, TITLE = #{title}
+		, TITLE_ENG = #{titleEng}
+		, SUB_TITLE = #{subTitle}
+		, CONTENT = #{content}
+		, CONTENT_TXT = #{contentTxt}
+		, CONTENT_ENG = #{contentEng}
+		, CONTENT_ENG_TXT = #{contentEngTxt}
+		, THUMNAIL_IMG = #{thumnailImg}
+		, URL1 = #{url1}
+		, URL2 = #{url2}
+		, KEYWORD = #{keyword}
+		, MAIN_YN = #{mainYn}
+		, PRODUCT_DESC = #{productDesc}
+		, PRODUCT_DESC_ENG = #{productDescEng}
+		, WRITER = #{writer}
+		, WRITER_PHONE = #{writerPhone}
+		, WRITER_MAIL = #{writerMail}
+		, WRITER_COMPANY = #{writerCompany}
+		, DEL_YN = #{delYn}
+		, MODI_USER_UID = #{userUid}
+	WHERE 1=1
+       AND BOARD_ID = #{boardId}
+  </update>
+    
+  <update id="BoardMapper_deleteBoard" parameterType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_deleteBoard */
+    
+  	UPDATE BOARD
+	SET 
+		DEL_YN = 'Y'
+		, MODI_USER_UID = #{userUid}
+		, MODI_TIME = CURRENT_TIMESTAMP()
+	WHERE 1=1
+      AND BOARD_ID = #{boardId}
+      
+  </update>
+  
+  <update id="BoardMapper_updateViewCnt" parameterType="String">
+    /** BoardMapper_updateViewCnt */
+    
+  	UPDATE BOARD
+	SET VIEW_CNT = VIEW_CNT + 1
+	WHERE 1=1
+      AND BOARD_ID = #{boardId}
+      
+  </update>
+  
+    <select id="BoardMapper_selectBoardListCnt" parameterType="com.bluewavetel.dto.PageDto" resultType="Integer">
+    /** BoardMapper_selectBoardListCnt */
+    
+  	SELECT COUNT(BOARD_ID)
+   	  FROM
+	  	(SELECT
+	  		BOARD_ID,
+	  		USER_UID,
+	  		BOARD_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+	  		CATEGORY_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+	    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+	  		TITLE,
+	  		TITLE_ENG,
+	  		SUB_TITLE,
+	  		CONTENT,
+	  		CONTENT_TXT,
+	  		CONTENT_ENG,
+	  		CONTENT_ENG_TXT,
+	  		THUMNAIL_IMG,
+	  		URL1,
+	  		URL2,
+	  		KEYWORD,
+	  		VIEW_CNT,
+	  		SCRAP_CNT,
+	  		MAIN_YN,
+	  		PRODUCT_DESC,
+	  		PRODUCT_DESC_ENG,
+	  		WRITER,
+	  		WRITER_PHONE,
+	  		WRITER_MAIL,
+	  		WRITER_COMPANY,
+	  		DEL_YN,
+	  		REG_USER_UID,
+	  		REG_TIME,
+	  		MODI_USER_UID,
+	  		MODI_TIME
+	  	FROM BOARD A
+	  	WHERE 1=1
+	   	<if test="boardTypeCd != null and !boardTypeCd.equals('')">
+	       AND BOARD_TYPE_CD = #{boardTypeCd}
+	    </if>
+	    AND DEL_YN = 'N'
+	    ) Z
+	 WHERE 1=1
+   	<if test="category != null and !category.equals('')">
+       AND CATEGORY_TYPE_ENG_NM = #{category}
+    </if>
+   	<if test="searchKeyword != null and !searchKeyword.equals('')">
+       AND ( TITLE LIKE CONCAT('%', #{searchKeyword}, '%') 
+       		OR TITLE_ENG LIKE CONCAT('%', #{searchKeyword}, '%') 
+       		OR SUB_TITLE LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR CONTENT_TXT LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR CONTENT_ENG_TXT LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR PRODUCT_DESC LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR PRODUCT_DESC_ENG LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR KEYWORD LIKE CONCAT('%', #{searchKeyword}, '%') 
+		)
+    </if>
+    
+  </select>
+  
+   <select id="BoardMapper_selectBoardList" parameterType="com.bluewavetel.dto.PageDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectBoardList */
+    
+   	SELECT *
+   	  FROM
+	  	(SELECT
+	    	ROW_NUMBER() OVER (ORDER BY REG_TIME ASC) AS NUMBER,
+	  		BOARD_ID,
+	  		USER_UID,
+	  		BOARD_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+	  		CATEGORY_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+	    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+	  		TITLE,
+	  		TITLE_ENG,
+	  		SUB_TITLE,
+	  		CONTENT,
+	  		CONTENT_TXT,
+	  		CONTENT_ENG,
+	  		CONTENT_ENG_TXT,
+	  		THUMNAIL_IMG,
+	  		URL1,
+	  		URL2,
+	  		KEYWORD,
+	  		VIEW_CNT,
+	  		SCRAP_CNT,
+	  		MAIN_YN,
+	  		PRODUCT_DESC,
+	  		PRODUCT_DESC_ENG,
+	  		WRITER,
+	  		WRITER_PHONE,
+	  		WRITER_MAIL,
+	  		WRITER_COMPANY,
+	  		DEL_YN,
+	  		REG_USER_UID,
+	  		REG_TIME,
+	  		MODI_USER_UID,
+	  		MODI_TIME
+	  	FROM BOARD A
+	  	WHERE 1=1
+	   	<if test="boardTypeCd != null and !boardTypeCd.equals('')">
+	       AND BOARD_TYPE_CD = #{boardTypeCd}
+	    </if>
+	    AND DEL_YN = 'N'
+	    ) Z
+	 WHERE 1=1
+   	<if test="category != null and !category.equals('')">
+       AND CATEGORY_TYPE_ENG_NM = #{category}
+    </if>
+   	<if test="searchKeyword != null and !searchKeyword.equals('')">
+       AND ( TITLE LIKE CONCAT('%', #{searchKeyword}, '%') 
+       		OR TITLE_ENG LIKE CONCAT('%', #{searchKeyword}, '%') 
+       		OR SUB_TITLE LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR CONTENT_TXT LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR CONTENT_ENG_TXT LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR PRODUCT_DESC LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR PRODUCT_DESC_ENG LIKE CONCAT('%', #{searchKeyword}, '%') 
+			OR KEYWORD LIKE CONCAT('%', #{searchKeyword}, '%') 
+		)
+    </if>
+    ORDER BY REG_TIME DESC, BOARD_ID DESC
+    LIMIT #{offset}, #{pageSize}
+    
+  </select>
+  
+  
+    <select id="BoardMapper_selectBoardListTagCnt" parameterType="com.bluewavetel.dto.PageDto" resultType="Integer">
+    /** BoardMapper_selectBoardListTagCnt */
+    
+  	SELECT COUNT(BOARD_ID)
+   	  FROM
+	  	(SELECT
+	  		BOARD_ID,
+	  		USER_UID,
+	  		BOARD_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+	  		CATEGORY_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+	    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+	  		TITLE,
+	  		TITLE_ENG,
+	  		SUB_TITLE,
+	  		CONTENT,
+	  		CONTENT_TXT,
+	  		CONTENT_ENG,
+	  		CONTENT_ENG_TXT,
+	  		THUMNAIL_IMG,
+	  		URL1,
+	  		URL2,
+	  		KEYWORD,
+	  		VIEW_CNT,
+	  		SCRAP_CNT,
+	  		MAIN_YN,
+	  		PRODUCT_DESC,
+	  		PRODUCT_DESC_ENG,
+	  		WRITER,
+	  		WRITER_PHONE,
+	  		WRITER_MAIL,
+	  		WRITER_COMPANY,
+	  		DEL_YN,
+	  		REG_USER_UID,
+	  		REG_TIME,
+	  		MODI_USER_UID,
+	  		MODI_TIME
+	  	FROM BOARD A
+	  	WHERE 1=1
+	       AND BOARD_TYPE_CD != 'E' /** 제품문의 제외*/
+	    AND DEL_YN = 'N'
+	    ) Z
+	 WHERE 1=1
+       AND KEYWORD LIKE CONCAT('%', #{searchKeyword}, '%') 
+  </select>
+  
+   <select id="BoardMapper_selectBoardListTag" parameterType="com.bluewavetel.dto.PageDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectBoardListTag */
+    
+   	SELECT *
+   	  FROM
+	  	(SELECT
+	    	ROW_NUMBER() OVER (ORDER BY REG_TIME ASC) AS NUMBER,
+	  		BOARD_ID,
+	  		USER_UID,
+	  		BOARD_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+	  		CATEGORY_TYPE_CD,
+	    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+	    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+	  		TITLE,
+	  		TITLE_ENG,
+	  		SUB_TITLE,
+	  		CONTENT,
+	  		CONTENT_TXT,
+	  		CONTENT_ENG,
+	  		CONTENT_ENG_TXT,
+	  		THUMNAIL_IMG,
+	  		URL1,
+	  		URL2,
+	  		KEYWORD,
+	  		VIEW_CNT,
+	  		SCRAP_CNT,
+	  		MAIN_YN,
+	  		PRODUCT_DESC,
+	  		PRODUCT_DESC_ENG,
+	  		WRITER,
+	  		WRITER_PHONE,
+	  		WRITER_MAIL,
+	  		WRITER_COMPANY,
+	  		DEL_YN,
+	  		REG_USER_UID,
+	  		REG_TIME,
+	  		MODI_USER_UID,
+	  		MODI_TIME
+	  	FROM BOARD A
+	  	WHERE 1=1
+	       AND BOARD_TYPE_CD != 'E' /** 제품문의 제외*/
+	    AND DEL_YN = 'N'
+	    ) Z
+	 WHERE 1=1
+       AND KEYWORD LIKE CONCAT('%', #{searchKeyword}, '%') 
+    ORDER BY REG_TIME DESC
+    LIMIT #{offset}, #{pageSize}
+    
+  </select>
+  
+  <select id="BoardMapper_selectBoardById" parameterType="String" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectBoardById */
+    
+  	SELECT
+  		BOARD_ID,
+  		USER_UID,
+  		BOARD_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+  		CATEGORY_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+  		TITLE,
+  		TITLE_ENG,
+  		SUB_TITLE,
+  		CONTENT,
+  		CONTENT_TXT,
+  		CONTENT_ENG,
+  		CONTENT_ENG_TXT,
+  		THUMNAIL_IMG,
+  		URL1,
+  		URL2,
+  		KEYWORD,
+  		VIEW_CNT,
+  		SCRAP_CNT,
+  		MAIN_YN,
+  		PRODUCT_DESC,
+  		PRODUCT_DESC_ENG,
+  		WRITER,
+  		WRITER_PHONE,
+  		WRITER_MAIL,
+  		WRITER_COMPANY,
+  		DEL_YN,
+  		REG_USER_UID,
+  		REG_TIME,
+  		MODI_USER_UID,
+  		MODI_TIME
+  	FROM BOARD A
+  	WHERE 1=1
+   	<if test="boardId != null and !boardId.equals('')">
+       AND BOARD_ID = #{boardId}
+    </if>
+    AND DEL_YN = 'N'
+  </select>
+  
+  <select id="BoardMapper_selectPreviousBoard" parameterType="com.bluewavetel.dto.BoardDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectPreviousBoard */
+    
+  	SELECT
+  		BOARD_ID,
+  		USER_UID,
+  		BOARD_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+  		CATEGORY_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+  		TITLE,
+  		TITLE_ENG,
+  		SUB_TITLE,
+  		CONTENT,
+  		CONTENT_TXT,
+  		CONTENT_ENG,
+  		CONTENT_ENG_TXT,
+  		THUMNAIL_IMG,
+  		URL1,
+  		URL2,
+  		KEYWORD,
+  		VIEW_CNT,
+  		SCRAP_CNT,
+  		MAIN_YN,
+  		PRODUCT_DESC,
+  		PRODUCT_DESC_ENG,
+  		WRITER,
+  		WRITER_PHONE,
+  		WRITER_MAIL,
+  		WRITER_COMPANY,
+  		DEL_YN,
+  		REG_USER_UID,
+  		REG_TIME,
+  		MODI_USER_UID,
+  		MODI_TIME
+  	FROM BOARD A
+  	WHERE 1=1 
+   	<if test="boardTypeCd != null and !boardTypeCd.equals('')">
+       AND BOARD_TYPE_CD = #{boardTypeCd}
+    </if>
+  	<if test="boardId != null and !boardId.equals('')">
+  	  AND BOARD_ID &lt; #{boardId}
+  	</if>
+    AND DEL_YN = 'N'
+    ORDER BY BOARD_ID DESC
+    LIMIT 1
+  </select>
+  
+  <select id="BoardMapper_selectNextBoard" parameterType="com.bluewavetel.dto.BoardDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectNextBoard */
+    
+  	SELECT
+  		BOARD_ID,
+  		USER_UID,
+  		BOARD_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+  		CATEGORY_TYPE_CD,
+    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+  		TITLE,
+  		TITLE_ENG,
+  		SUB_TITLE,
+  		CONTENT,
+  		CONTENT_TXT,
+  		CONTENT_ENG,
+  		CONTENT_ENG_TXT,
+  		THUMNAIL_IMG,
+  		URL1,
+  		URL2,
+  		KEYWORD,
+  		VIEW_CNT,
+  		SCRAP_CNT,
+  		MAIN_YN,
+  		PRODUCT_DESC,
+  		PRODUCT_DESC_ENG,
+  		WRITER,
+  		WRITER_PHONE,
+  		WRITER_MAIL,
+  		WRITER_COMPANY,
+  		DEL_YN,
+  		REG_USER_UID,
+  		REG_TIME,
+  		MODI_USER_UID,
+  		MODI_TIME
+  	FROM BOARD A
+  	WHERE 1=1  
+   	<if test="boardTypeCd != null and !boardTypeCd.equals('')">
+       AND BOARD_TYPE_CD = #{boardTypeCd}
+    </if>
+  	<if test="boardId != null and !boardId.equals('')">
+  	  AND BOARD_ID &gt; #{boardId} 
+  	</if>
+    AND DEL_YN = 'N'
+    ORDER BY BOARD_ID ASC
+    LIMIT 1
+  </select>
+  
+  <select id="BoardMapper_selectBoardMain" parameterType="com.bluewavetel.dto.BoardDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectBoardMain */
+    
+	    SELECT
+	    		ROW_NUMBER() OVER (ORDER BY REG_TIME DESC) AS NUMBER,
+		  		BOARD_ID,
+		  		USER_UID,
+		  		BOARD_TYPE_CD,
+		    	(SELECT X.TYPE_NAME FROM BOARD_TYPE X WHERE X.TYPE_CD = A.BOARD_TYPE_CD) AS BOARD_TYPE_NM,
+		  		CATEGORY_TYPE_CD,
+		    	(SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM,
+		    	(SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM,
+		  		TITLE,
+		  		TITLE_ENG,
+		  		SUB_TITLE,
+		  		CONTENT,
+		  		CONTENT_TXT,
+		  		CONTENT_ENG,
+		  		CONTENT_ENG_TXT,
+		  		THUMNAIL_IMG,
+		  		URL1,
+		  		URL2,
+		  		KEYWORD,
+		  		VIEW_CNT,
+		  		SCRAP_CNT,
+		  		MAIN_YN,
+		  		PRODUCT_DESC,
+		  		PRODUCT_DESC_ENG,
+		  		WRITER,
+		  		WRITER_PHONE,
+		  		WRITER_MAIL,
+		  		WRITER_COMPANY,
+		  		DEL_YN,
+		  		REG_USER_UID,
+		  		REG_TIME,
+		  		MODI_USER_UID,
+		  		MODI_TIME
+	  	FROM BOARD A
+	  	WHERE 1=1
+	   	<if test="mainYn != null and !mainYn.equals('')">
+	       AND MAIN_YN = #{mainYn}
+	    </if>
+	   	<if test="categoryTypeCd != null and !categoryTypeCd.equals('')">
+	       AND CATEGORY_TYPE_CD = #{categoryTypeCd}
+	    </if>
+	    AND DEL_YN = 'N'
+	    ORDER BY REG_TIME DESC
+	   	<if test="number != null and number > 0">
+	       LIMIT #{number}
+	    </if>
+	    
+  </select>
+  
+    <select id="BoardMapper_selectBoardsRank" parameterType="com.bluewavetel.dto.BoardDto" resultType="com.bluewavetel.dto.BoardDto">
+    /** BoardMapper_selectBoardsRank */
+    
+	WITH RankedBoards AS (
+	    SELECT *
+			, (SELECT X.TYPE_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_NM
+			, (SELECT X.TYPE_ENG_NAME FROM CATEGORY_TYPE X WHERE X.TYPE_CD = A.CATEGORY_TYPE_CD) AS CATEGORY_TYPE_ENG_NM
+	        ,  ROW_NUMBER() OVER(PARTITION BY CATEGORY_TYPE_CD ORDER BY REG_TIME DESC) AS ROWNUM
+	    FROM BOARD A
+	    WHERE DEL_YN = 'N'
+	    AND BOARD_TYPE_CD = #{boardTypeCd} /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+	)
+	SELECT * FROM RankedBoards
+	WHERE ROWNUM &lt;= #{number}
+	ORDER BY CATEGORY_TYPE_CD ASC, REG_TIME DESC
+	
+  </select>
+  
+   <insert id="BoardMapper_insertFile" parameterType="com.bluewavetel.dto.FileDto" useGeneratedKeys="true" keyProperty="fileId">
+    /** BoardMapper_insertFile */
+    
+    INSERT INTO FILE (
+		BOARD_ID, 
+		FILE_PATH, 
+		FILE_NAME, 
+		FILE_NAME_ORG, 
+		FILE_SIZE, 
+		FILE_EXT, 
+		FILE_NOTE, 
+		DEL_YN, 
+		REG_USER_UID, 
+		REG_TIME, 
+		MODI_USER_UID, 
+		MODI_TIME
+	) VALUES (
+		#{boardId},
+		#{filePath},
+		#{fileName},
+		#{fileNameOrg},
+		#{fileSize},
+		#{fileExt},
+		#{fileNote},
+		'N',
+		#{userUid},
+		COALESCE(#{regTime}, CURRENT_TIMESTAMP()),
+		#{userUid},
+		CURRENT_TIMESTAMP()
+	);
+  </insert>
+  
+  <select id="BoardMapper_selectFileById" parameterType="Integer" resultType="com.bluewavetel.dto.FileDto">
+    /** BoardMapper_selectBoardById */
+    
+  	SELECT
+  		*
+  	FROM FILE A
+  	WHERE 1=1
+       AND FILE_ID = #{fileId}
+    AND DEL_YN = 'N'
+  </select>
+  
+  <select id="BoardMapper_selectBoardFileAll" parameterType="Integer" resultType="com.bluewavetel.dto.FileDto">
+    /** BoardMapper_selectBoardFileAll */
+    
+  	SELECT
+  		*
+  	FROM FILE A
+  	WHERE 1=1
+       AND BOARD_ID = #{boardId}
+    AND DEL_YN = 'N'
+  </select>
+  
+  <update id="BoardMapper_deleteFileById" parameterType="Integer">
+    /** BoardMapper_deleteFileById */
+    
+  	UPDATE FILE
+	SET 
+		DEL_YN = 'Y'
+		, MODI_USER_UID = '000001'
+		, MODI_TIME = CURRENT_TIMESTAMP()
+	WHERE 1=1
+      AND FILE_ID = #{fileId}
+  </update>
+  
+  <update id="BoardMapper_deleteFileAll" parameterType="Integer">
+    /** BoardMapper_deleteFileAll */
+    
+  	UPDATE FILE
+	SET 
+		DEL_YN = 'Y'
+		, MODI_USER_UID = '000001'
+		, MODI_TIME = CURRENT_TIMESTAMP()
+	WHERE 1=1
+      AND BOARD_ID = #{boardId}
+  </update>
+
+</mapper>

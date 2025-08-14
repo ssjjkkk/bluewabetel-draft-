@@ -5,6 +5,13 @@ Hover Text : #093696;
 */
 /***********************/
 
+/*.product_view_wrapper {
+    background: linear-gradient(0deg, rgba(5, 15, 35, 0.1), rgba(5, 15, 35, 0.1)), url("/img/bg_product_view.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}*/
+
 .cke_notification.cke_notification_warning { display: none; }
 
 .board {

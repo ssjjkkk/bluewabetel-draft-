@@ -16,26 +16,27 @@
             </c:if>
         </h2>
         <div class="company_contents">
-          <div class="company_contents_bg" style="background-image:url('/img/회사소개.png')"></div>
-          <article class="philo-card philo-tl">
-            <div class="philo-icon"><img src="/img/회사소개1.png" alt=""></div>
-            <h3 class="philo-title">Everything’s being connected via Wireless.</h3>
-          </article>
+          <div class="company_contents_bg_philo" style="background-image:url('/img/회사소개.png')">
+            <article class="philo-card philo-tl" data-aos="fade" data-aos-delay="200" data-aos-duration="1000">
+              <div class="philo-icon"><img src="/img/회사소개1.png" alt=""></div>
+              <h3 class="philo-title">Everything’s being connected via Wireless.</h3>
+            </article>
 
-          <article class="philo-card philo-tr">
-            <div class="philo-icon"><img src="/img/회사소개2.png" alt=""></div>
-            <h3 class="philo-title">Survival is to increase sales and expand business areas.</h3>
-          </article>
+            <article class="philo-card philo-tr" data-aos="fade" data-aos-delay="400" data-aos-duration="1000">
+              <div class="philo-icon"><img src="/img/회사소개2.png" alt=""></div>
+              <h3 class="philo-title">Survival is to increase sales and expand business areas.</h3>
+            </article>
 
-          <article class="philo-card philo-bl">
-            <div class="philo-icon"><img src="/img/회사소개3.png" alt=""></div>
-            <h3 class="philo-title">Leave people rather than margins(benefits).</h3>
-          </article>
+            <article class="philo-card philo-bl" data-aos="fade" data-aos-delay="600" data-aos-duration="1000">
+              <div class="philo-icon"><img src="/img/회사소개3.png" alt=""></div>
+              <h3 class="philo-title">Leave people rather than margins(benefits).</h3>
+            </article>
 
-          <article class="philo-card philo-br">
-            <div class="philo-icon"><img src="/img/회사소개4.png" alt=""></div>
-            <h3 class="philo-title">Simple is the best.</h3>
-          </article>
+            <article class="philo-card philo-br" data-aos="fade" data-aos-delay="800" data-aos-duration="1000">
+              <div class="philo-icon"><img src="/img/회사소개4.png" alt=""></div>
+              <h3 class="philo-title">Simple is the best.</h3>
+            </article>
+          </div>
         </div>
     </section>
 	<%@ include file="/WEB-INF/views/layout/footer.jsp" %>

@@ -24,7 +24,11 @@ $(document).ready(function() {
         // 클릭한 페이지 정보
         var targetPage = $(this).data('page');
 
-        currentCategory = $('#category').val();
+        const url = new URL(window.location.href);
+        const searchParams = url.searchParams;
+        const category = searchParams.get('openTabName')
+
+        currentCategory = category;
         boardType = $('#boardType').val();
         searchKeyword = $('#searchKeyword').val();
 
@@ -38,7 +42,11 @@ $(document).ready(function() {
     });
     
     $('#searchKeyword').on('keydown', function(event){
-        currentCategory = $('#category').val();
+        const url = new URL(window.location.href);
+        const searchParams = url.searchParams;
+        const category = searchParams.get('openTabName')
+
+        currentCategory = category;
         boardType = $('#boardType').val();
         searchKeyword = $('#searchKeyword').val();
 
@@ -65,14 +73,18 @@ function openTab(tabName) {
       tabcontent[i].style.display = "none";
   }
 
-  tablinks = document.getElementsByClassName("tab-link");
-  for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
+  // tablinks = document.getElementsByClassName("tab-link");
+//  for (i = 0; i < tablinks.length; i++) {
+//      tablinks[i].className = tablinks[i].className.replace(" active", "");
+//  }
 
   //console.log(tabName.replace('tab-',''));
   //console.log(document.getElementById(tabName).className);
-  document.getElementById(tabName).className += " active";
+  // document.getElementById(tabName).className += " active";
+//  if (tabName == 'tab-notice') {
+//      document.getElementById('noticeSection').style.display = 'inline-flex'
+//  }
+
   document.getElementById(tabName.replace('tab-','')).style.display = "block";
 }
 
@@ -93,13 +105,13 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
     loadingBar.addClass('active');
 
     var totalPages = "";
-    var pagePerSize = 9;
+    var pagePerSize = 8;
     if(boardTypeCd == 'A'){
-        pagePerSize = 9;
-    }else if( boardTypeCd == 'B'){
-        pagePerSize = 6;
-    }else if (boardTypeCd == 'C' || boardTypeCd =='D'){
+        pagePerSize = 8;
+    }else if( boardTypeCd == 'B' || boardTypeCd == 'D'){
         pagePerSize = 10;
+    }else if (boardTypeCd == 'C'){
+        pagePerSize = 9;
     }
 
     setTimeout(function(){
@@ -122,10 +134,10 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                 
                 if(boardTypeCd == 'A'){ // 제품소개
                     dataList = $('#'+ currentCategory);
-                } else if (boardTypeCd == 'B'){ //적용사례
+                } else if (boardTypeCd == 'B'){ // R&D
                     dataList = $('#'+ currentCategory);
-                } else if (boardTypeCd == 'C' || boardTypeCd == 'D' || boardTypeCd == 'E'){
-                    dataList = $('#notice_list');
+                } else if (boardTypeCd == 'C') { // 뉴스, 공지
+                    dataList = $('#'+ currentCategory);
                 }
 
                 //비우기
@@ -135,7 +147,7 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                 if(result.length == 0){
 
                     $('#totalPageCount').val(1);
-                    if(boardTypeCd == 'A' || boardTypeCd == 'B'){ // 제품소개
+                    if(boardTypeCd == 'A' || (boardTypeCd == 'C' && currentCategory == 'news')){ // 제품소개, 뉴스
                         newsHtml += '<span style="display:inline-block;width:100%;text-align:center;">게시글이 없습니다.</span>'
                     } else {
                         newsHtml += '<tr><td style="text-align:center;">게시글이 없습니다.</td></tr>'
@@ -145,8 +157,7 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                         newsHtml += '<div class="product_group">'
 
                         $.each(result, function (index, item) {
-
-                            if(item.thumnailImg == null) {
+                            if (item.thumnailImg == null || item.thumnailImg == '') {
                                 item.thumnailImg = './img/common/noImage.png';
                             }
 
@@ -164,8 +175,7 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                             '<div class="product_info">' +
                             '<h3 class="product_box_title">' + title + '</h3>' +
                             '<div class="product_box_subinfo">' +
-                            '<p <span class="product_box_date">' + item.regTime.substring(0,10).replaceAll('-','.') + '</span> | 조회수 : ' + item.viewCnt + '</p>' +
-                            '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m547.69-267.69-28.31-28.77L682.92-460H200v-40h482.92L519.38-663.54l28.31-28.77L760-480 547.69-267.69Z"/></svg>' +
+                            '<p>' + item.subTitle + '</p>' +
                             '</div></div>' +
                             '</article>' +
                             '</a>'
@@ -220,7 +230,45 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                             }
                         });
                         newsHtml += '</div>'
-                    } else if (boardTypeCd == 'C' || boardTypeCd == 'D'){
+                    } else if (boardTypeCd == 'C' && currentCategory == 'news') {
+                        newsHtml += '<div class="product_group">'
+                        $.each(result, function (index, item) {
+
+                            if (item.thumnailImg == null || item.thumnailImg == '') {
+                                item.thumnailImg = './img/common/noImage.png';
+                            }
+
+                            if(lang == "en_US" && item.titleEng != ""){
+                                title = item.titleEng;
+                            } else {
+                                title = item.title;
+                            }
+
+                            // 받은 데이터를 리스트로 표시
+                            newsHtml +=
+                            '<a href="/boardView?boardId=' + item.boardId + '">' +
+                            '<article class="product_box">' +
+                            '<img src="' + item.thumnailImg + '" width="100%">' +
+                            '<div class="product_info">' +
+                            '<h3 class="product_box_title">' + title + '</h3>' +
+                            '<div class="product_box_subinfo">' +
+                            '<p>' + item.subTitle + '</p>' +
+                            '</div></div>' +
+                            '</article>' +
+                            '</a>'
+
+                            if(index == 0){
+                                totalPages = item.pageInfo.totalPageCount;
+                                //console.log("totalPages : " + totalPages);
+                                if(totalPages == 0 || totalPages == null){
+                                    $('#totalPageCount').val(1);
+                                } else {
+                                    $('#totalPageCount').val(totalPages);
+                                }
+                            }
+                        });
+                        newsHtml += '</div>'
+                    } else if (boardTypeCd == 'C' && currentCategory != 'news') {
                         newsHtml += '<colgroup><col width="5%"><col><col width="10%"><col width="5%"></colgroup>'
                         $.each(result, function (index, item) {
 
@@ -231,7 +279,7 @@ function loadBoardList(pageNo, currentCategory, boardTypeCd, searchKeyword) {
                             }
 
                             // 받은 데이터를 리스트로 표시
-                            newsHtml += 
+                            newsHtml +=
                             '<tr>' +
                             '<td>' + item.number + '</td>' +
                             '<td><a href="/boardView?boardId=' + item.boardId + '">' + title + '</a></td>' +

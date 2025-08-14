@@ -44,26 +44,26 @@ public class PortalCtr {
 		board.setMainYn("Y");
 		
 		List<BoardDto> inspectionList = new ArrayList<>();
-		board.setCategoryTypeCd(1);
-		inspectionList = boardSvi.selectBoardMain(board); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		board.setCategoryTypeCd(1); /* 1~5 제품카테고리, 6/7 뉴스/공지사항 카테고리 */
+		inspectionList = boardSvi.selectBoardMain(board); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		List<BoardDto> analyzerList = new ArrayList<>();
 		board.setCategoryTypeCd(2);
-		analyzerList = boardSvi.selectBoardMain(board); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		analyzerList = boardSvi.selectBoardMain(board); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		List<BoardDto> sensorList = new ArrayList<>();
 		board.setCategoryTypeCd(3);
-		sensorList = boardSvi.selectBoardMain(board); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		sensorList = boardSvi.selectBoardMain(board); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		List<BoardDto> etcList = new ArrayList<>();
 		board.setCategoryTypeCd(4);
-		etcList = boardSvi.selectBoardMain(board); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		etcList = boardSvi.selectBoardMain(board); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		List<BoardDto> noticeList = new ArrayList<>();
-		noticeList = boardSvi.selectBoardNew("C", 2); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		noticeList = boardSvi.selectBoardNew("C", 2); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		List<BoardDto> boardList = new ArrayList<>();
-		boardList = boardSvi.selectBoardNew("D", 2); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		boardList = boardSvi.selectBoardNew("D", 2); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 
 		mv.addObject("inspectionList", inspectionList);
 		mv.addObject("analyzerList", analyzerList);
@@ -81,29 +81,21 @@ public class PortalCtr {
 	}
 	
 	@GetMapping("/company")
-	public String greeting() {
+	public String philosophy() {
         return "/company/philosophy";
 	}
 	
-	@GetMapping("/vision")
-	public String vision() {
-        return "/company/vision";
-	}
+	@GetMapping("/mission")
+	public String mission() { return "/company/mission";	}
 	
-	@GetMapping("/principle")
-	public String principle() {
-        return "/company/principle";
-	}
+	@GetMapping("/vision")
+	public String vision() { return "/company/vision";	}
 	
 	@GetMapping("/history")
-	public String history() {
-        return "/company/history";
-	}
+	public String history() { return "/company/history"; }
 	
-	@GetMapping("/certified")
-	public String certified() {
-        return "/company/certified";
-	}
+	@GetMapping("/map")
+	public String map() { return "/company/map"; }
 	
 	@GetMapping("/product")
 	public ModelAndView product(@RequestParam(name = "openTabName", required = false) String openTabName, HttpSession session, Locale locale) {
@@ -119,8 +111,8 @@ public class PortalCtr {
 		
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
-		pageDto.setPageSize(9); //페이지 변경 시에는 javascript sub.js loadBoardList에 설정
-		pageDto.setBoardTypeCd("A"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setPageSize(8); //페이지 변경 시에는 javascript sub.js loadBoardList에 설정
+		pageDto.setBoardTypeCd("A"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
@@ -139,7 +131,7 @@ public class PortalCtr {
         return mv;
 	}
 	
-	@GetMapping("/case")
+	@GetMapping("/news")
 	public ModelAndView explanation(@RequestParam(name = "openTabName", required = false) String openTabName, HttpSession session, Locale locale) {
 		
 		ModelAndView mv = new ModelAndView();
@@ -147,28 +139,28 @@ public class PortalCtr {
 		PageDto pageDto = new PageDto();
 		
 		if(openTabName != null) {
-			pageDto.setCategory(openTabName);
+			pageDto.setCategory(openTabName); // news, notice
 			mv.addObject("openTabName", openTabName);
 		}
 		
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
-		pageDto.setPageSize(6);
-		pageDto.setBoardTypeCd("B"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setPageSize(9);
+		pageDto.setBoardTypeCd("C"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
 		// 모든 뉴스
-		List<BoardDto> productList = new ArrayList<>();
-		productList = boardSvi.selectBoardList(pageDto);
+		List<BoardDto> newsList = new ArrayList<>();
+		newsList = boardSvi.selectBoardList(pageDto);
 
 		mv.addObject("pageInfo", pageDto);
-		mv.addObject("productList", productList);
+		mv.addObject("newsList", newsList);
 		
 		keepLocale(session, locale);
 		
 		//return할 View
-		mv.setViewName("/case");
+		mv.setViewName("/news");
 		
         return mv;
 	}
@@ -183,7 +175,7 @@ public class PortalCtr {
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
 		pageDto.setPageSize(10);
-		pageDto.setBoardTypeCd("C"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setBoardTypeCd("C"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
@@ -212,7 +204,7 @@ public class PortalCtr {
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
 		pageDto.setPageSize(10);
-		pageDto.setBoardTypeCd("C"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setBoardTypeCd("C"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
@@ -271,7 +263,7 @@ public class PortalCtr {
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
 		pageDto.setPageSize(10);
-		pageDto.setBoardTypeCd("E"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setBoardTypeCd("E"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
@@ -300,7 +292,7 @@ public class PortalCtr {
 		// 초기 페이지 설정
 		pageDto.setPageNo(1);
 		pageDto.setPageSize(10);
-		pageDto.setBoardTypeCd("D"); /* A:제품소개, B:적용사례, C:공지사항, D:자료실, E:제품문의 */
+		pageDto.setBoardTypeCd("D"); /* A:제품소개, B:R&D, C:뉴스, D:기술지원, E:제품문의 */
 		
 		pageDto = boardSvi.selectBoardListCnt(pageDto);
 		
@@ -319,11 +311,11 @@ public class PortalCtr {
         return mv;
 	}
 	
-	@GetMapping("/map")
+	@GetMapping("/supportmap")
 	public String map(HttpSession session, Locale locale) {
-		
+
 		keepLocale(session, locale);
-		
+
         return "/support/map";
 	}
 	

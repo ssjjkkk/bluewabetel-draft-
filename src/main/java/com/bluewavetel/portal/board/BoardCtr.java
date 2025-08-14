@@ -157,9 +157,11 @@ public class BoardCtr {
 		if("A".equals(returnBoardType)) {
 			mv.setViewName("/board/productView");
 		} else if ("B".equals(returnBoardType)) {
-			mv.setViewName("/board/caseView");
+			mv.setViewName("/board/r&dView");
 		} else if ("C".equals(returnBoardType)) {
-			mv.setViewName("/board/noticeView");
+			mv.setViewName("/board/newsView");
+		} else if ("D".equals(returnBoardType)) {
+			mv.setViewName("/board/supportView");
 		} else if ("E".equals(returnBoardType)) {
 			mv.setViewName("/board/inquiryView");
 		} else {
@@ -229,8 +231,8 @@ public class BoardCtr {
 		}
 		
 		
-		//제품 소개 또는 적용 사례 메뉴인 경우 썸네일 처리
-		if(boardDto.getBoardTypeCd().equals("A") || boardDto.getBoardTypeCd().equals("B")) {
+		//제품 소개 또는 뉴스 메뉴인 경우 썸네일 처리
+		if(boardDto.getBoardTypeCd().equals("A") || (boardDto.getBoardTypeCd().equals("C") && boardDto.getCategoryTypeCd() == 6)) {
 			// 썸네일 이미지 파일이 있으면
 			if(boardDto.getThumbnailImgFile().getSize() > 0) {
 				String thumbnailImgSrc = thumbImageUpload(boardDto.getThumbnailImgFile());

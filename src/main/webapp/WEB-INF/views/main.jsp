@@ -20,7 +20,7 @@
             <span class="section_title" data-aos="fade" data-aos-duration="1000"><spring:message code="product"/></span>
             <span class="board_group_title" data-aos="fade" data-aos-duration="1000"><spring:message code="used in various industries<br/>Check out the product"/></span>
             <div class="main_product_category" data-aos="fade" data-aos-delay="200" data-aos-duration="1000">
-              <button type="button" id="tab-Inspection" class="tab-link" onclick="openTab1('tab-Inspection')">
+              <button type="button" id="tab-Inspection" class="tab-link" onclick="window.location.href='/product?openTabName=antenna'">
                 More View &nbsp;
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="8.00195" cy="8" r="8" fill="#0A6FAE"/>
@@ -30,36 +30,39 @@
             </div>
           </div>
 
-          <div class="product-container-right">
+          <div class="product-container-right" data-aos="slide-left" data-aos-delay="200" data-aos-duration="1000">
               <div class="swiper-container product-swiper" id="product_swiper">
                   <div class="swiper-wrapper">
-                    <div class="swiper-slide product-card">
-                      <img src="/img/product1.png" alt="제품 1" />
-                      <h3 class="card-title">제품 1</h3>
-                      <p class="card-desc">제품 1 간단한 설명</p>
-                    </div>
-                    <!-- 더미들 --!>
-                    <div class="swiper-slide product-card">
-                      <img src="/img/product2.png" alt="제품 2" />
-                      <h3 class="card-title">제품 2</h3>
-                      <p class="card-desc">제품 2 간단한 설명</p>
-                    </div>
-                    <div class="swiper-slide product-card">
-                      <img src="/img/product3.png" alt="제품 3" />
-                      <h3 class="card-title">제품 3</h3>
-                      <p class="card-desc">제품 3 간단한 설명</p>
-                    </div>
-                    <div class="swiper-slide product-card">
-                      <img src="/img/product3.png" alt="제품 4" />
-                      <h3 class="card-title">제품 4</h3>
-                      <p class="card-desc">제품 4 간단한 설명</p>
-                    </div>
-                    <div class="swiper-slide product-card">
-                      <img src="/img/product3.png" alt="제품 5" />
-                      <h3 class="card-title">제품 5</h3>
-                      <p class="card-desc">제품 5 간단한 설명</p>
-                    </div>
-                    <!-- 더미들 끝--!>
+                      <c:forEach items="${inspectionList }" var="product" varStatus="i">
+                          <div class="swiper-slide product-card" onclick="window.location.href='/boardView?boardId=${product.boardId}'">
+                              <c:if test="${not empty product.thumnailImg}">
+                                  <img src="${product.thumnailImg}" alt="${product.title}" style="width: 75%;"/>
+                              </c:if>
+                              <h3 class="card-title">
+                                  <c:if test="${locale eq 'ko_KR' || locale eq 'ko'}">
+                                      ${product.title}
+                                  </c:if>
+                                  <c:if test="${locale eq 'en_US' || locale eq 'en'}">
+                                      <c:choose>
+                                          <c:when test="${not empty product.titleEng}">
+                                              ${product.titleEng}
+                                          </c:when>
+                                          <c:otherwise>
+                                              ${product.title}
+                                          </c:otherwise>
+                                      </c:choose>
+                                  </c:if>
+                              </h3>
+                              <p class="card-desc">
+                                  <c:if test="${locale eq 'ko_KR' || locale eq 'ko'}">
+                                      ${product.productDesc}
+                                  </c:if>
+                                  <c:if test="${locale eq 'en_US' || locale eq 'en'}">
+                                      ${product.productDescEng}
+                                  </c:if>
+                              </p>
+                          </div>
+                      </c:forEach>
                   </div>
               </div>
           </div>
@@ -84,7 +87,7 @@
           </div>
         </div>
 
-        <div class="news-container-second">
+        <div class="news-container-second" data-aos="slide-left" data-aos-delay="200" data-aos-duration="1000">
             <div class="swiper-container news-swiper" id="news_swiper">
                 <div class="swiper-wrapper">
                   <div class="swiper-slide news-card">

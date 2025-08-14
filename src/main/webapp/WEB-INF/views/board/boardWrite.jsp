@@ -26,14 +26,16 @@
                 <select id="boardTypeCd" name="boardTypeCd">
                     <option value="">---메뉴 선택---</option>
                     <c:forEach items="${menuList }" var="menuList" varStatus="i">
-                        <option value="${menuList.typeCd}">${menuList.typeName}</option>
+                        <c:if test="${menuList.typeCd != 'E'}">
+                            <option value="${menuList.typeCd}">${menuList.typeName}</option>
+                        </c:if>
                     </c:forEach>
                 </select>
 
                 <span class="title_md margin-0">카테고리</span>
                 <select id="categoryTypeCd" name="categoryTypeCd">
                     <option value="">---카테고리 선택---</option>
-                    <c:forEach items="${categoryList }" var="categoryList" varStatus="i">
+                    <c:forEach items="${categoryList}" var="categoryList" varStatus="i">
                         <option value="${categoryList.typeCd}">${categoryList.typeName}</option>
                     </c:forEach>
                 </select>
@@ -111,7 +113,7 @@
                         </c:forEach>
                     </div>
                 </c:if>
-            </a>
+            <!-- ????</a> --!>
 
                 <span class="title_md margin-0">관련 키워드</span>
                 <input type="text" id="keyword" name="keyword" placeholder="콤마(,)로 구분해서 입력해주세요" value="${board.keyword}"/>
@@ -135,12 +137,12 @@
 
                     <span class="title_md margin-0">제품설명</span>
                     <div class="board_subtitle">
-                        <textarea id="productDesc" name="productDesc" rows="5" placeholder="메인페이지에 보일 제품 설명을 입력해주세요"><c:out value="${board.productDesc}" /></textarea>
+                        <textarea id="productDesc" name="productDesc" rows="5" placeholder="메인페이지에 보일 제품 설명을 입력해주세요 (제품메뉴에만 적용됩니다.)"><c:out value="${board.productDesc}" /></textarea>
                     </div>
 
                     <span class="title_md margin-0">제품설명(영문)</span>
                     <div class="board_subtitle">
-                        <textarea id="productDescEng" name="productDescEng" rows="5" placeholder="메인페이지에 보일 제품 설명을 영문으로 입력해주세요"><c:out value="${board.productDescEng}" /></textarea>
+                        <textarea id="productDescEng" name="productDescEng" rows="5" placeholder="메인페이지에 보일 제품 설명을 영문으로 입력해주세요 (제품메뉴에만 적용됩니다.)"><c:out value="${board.productDescEng}" /></textarea>
                     </div>
                 </div>
                 

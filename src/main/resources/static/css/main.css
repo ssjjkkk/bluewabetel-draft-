@@ -776,6 +776,8 @@ Hover Text : #093696;
 .product-swiper .swiper-slide {
   width: 430px;
   height: 550px; !important;
+  align-content: center;
+  cursor: pointer;
 }
 
 .swiper-button-prev,
@@ -851,7 +853,7 @@ Hover Text : #093696;
   padding: 0 !important;
   max-width: 100%;
   min-height: 550px;
-  background-image : url("/img/bg_main_inquiry2.jpg");
+  background: linear-gradient(0deg, rgba(10, 28, 66, 0.5), rgba(10, 28, 66, 0.5)), url("/img/bg_main_inquiry2.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

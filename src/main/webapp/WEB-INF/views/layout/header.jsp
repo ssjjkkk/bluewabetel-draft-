@@ -56,11 +56,11 @@
         <nav id="main_menu">
             <ul>
                 <li><a href="/company"><span><spring:message code="company"/></span></a></li>
-                <li><a href="/product?openTabName=Inspection"><span><spring:message code="product"/></span></a></li>
-                <li><a href="/case?openTabName=Inspection"><span><spring:message code="rd"/></span></a></li>
-                <li><a href="/case?openTabName=Inspection"><span><spring:message code="news"/></span></a></li>
-                <li><a href="/case?openTabName=Inspection"><span><spring:message code="support"/></span></a></li>
-                <li><a href="/case?openTabName=Inspection"><span><spring:message code="inquiryHead"/></span></a></li>
+                <li><a href="/product?openTabName=antenna"><span><spring:message code="product"/></span></a></li>
+                <li><a href="/product?openTabName=antenna"><span><spring:message code="rd"/></span></a></li>
+                <li><a href="/news?openTabName=news"><span><spring:message code="news"/></span></a></li>
+                <li><a href="/product?openTabName=antenna"><span><spring:message code="support"/></span></a></li>
+                <li><a href="/product?openTabName=antenna"><span><spring:message code="inquiryHead"/></span></a></li>
             </ul>
         </nav>
         <!-- SNS button -->
@@ -108,9 +108,9 @@
                  </ul>
              </li>
               <li>
-                 <a href="/product?openTabName=Inspection"><span><spring:message code="product"/></span></a>
+                 <a href="/product?openTabName=antenna"><span><spring:message code="product"/></span></a>
                  <ul>
-                     <li><a href="/product?openTabName=Inspection"><span><spring:message code="Antenna"/></span></a></li>
+                     <li><a href="/product?openTabName=antenna"><span><spring:message code="Antenna"/></span></a></li>
                      <li><a href="/product?openTabName=Analyzer"><span><spring:message code="GPS"/></span></a></li>
                      <li><a href="/product?openTabName=Sensor"><span><spring:message code="Electronic Warfare"/></span></a></li>
                      <li><a href="/product?openTabName=Etc"><span><spring:message code="OEM"/></span></a></li>
@@ -187,7 +187,6 @@ $(document).ready(function() {
 
     // 모바일에서 전체메뉴 내 드랍다운 적용을 위한 스크립트
     const dropdownItems = document.querySelectorAll(".dropdown-menu > ul > li");
-    console.log('으에')
     dropdownItems.forEach(item => {
         const firstAnchor = item.querySelector("a");
 

@@ -76,6 +76,10 @@ $(document).ready(function(){
 	$('#boardTypeCd').change(function(e) {
 		categoryTypeCheck();
 	});
+
+	$('#categoryTypeCd').change(function(e) {
+    categoryTypeCheck();
+  });
 	
     /*
 	 * 게시물 등록
@@ -90,6 +94,7 @@ $(document).ready(function(){
         if(!confirm("등록하시겠습니까?")) return;
 
 		CKEDITOR.instances.content.updateElement();
+		CKEDITOR.instances.contentEng.updateElement();
 	    
 		var formData =  new FormData(document.getElementById('boardForm'));
 		
@@ -240,9 +245,16 @@ function submitModifyForm(formData){
 }
 
 function categoryTypeCheck() {
-	//console.log($('#boardTypeCd').val());
-	if($('#boardTypeCd').val() == 'C' || $('#boardTypeCd').val() == 'D'){
+	console.log($('#boardTypeCd').val());
+	$('#categoryTypeCd option').toArray().forEach(option => {
+      console.log('머임');
+      if (option.style.display == 'none') {
+          option.style.display = 'revert'
+      }
+  })
+	if($('#boardTypeCd').val() !== 'A' && $('#boardTypeCd').val() !== 'C'){
 		$('#categoryTypeCd').prop('disabled','disabled');
+		document.getElementById('mainYnArea').style.display = "none";
 		$('#mainYn').prop('disabled','');
 		$('input[type=radio][name=mainYn]').prop('disabled','disabled');
 	} else {
@@ -251,7 +263,23 @@ function categoryTypeCheck() {
 			document.getElementById('mainYnArea').style.display = "inline-flex";
 			$('#mainYn').prop('disabled','disabled');
 			$('input[type=radio][name=mainYn]').prop('disabled','');
-		} else {
+			$('#categoryTypeCd option').toArray().forEach(option => {
+			    if (option.value == '6' || option.value == '7') {
+			      option.style.display = 'none'
+			    }
+			})
+		} else if ($('#boardTypeCd').val() == 'C') {
+      $('#categoryTypeCd option').toArray().forEach(option => {
+          if (option.value !== '6' && option.value !== '7') {
+            option.style.display = 'none'
+          }
+      })
+      if ($('#categoryTypeCd').val() == '6') {
+        document.getElementById('mainYnArea').style.display = "inline-flex";
+        $('#mainYn').prop('disabled','disabled');
+        $('input[type=radio][name=mainYn]').prop('disabled','');
+      }
+		}else {
 			$('#mainYn').prop('disabled','');
 			$('input[type=radio][name=mainYn]').prop('disabled','disabled');
 		}
@@ -269,7 +297,7 @@ function notNullCheck() {
 
 	// 카테고리
 	const categoryTypeCd = $('#categoryTypeCd').val();
-	if((boardTypeCd == "A" || boardTypeCd == "B") && categoryTypeCd == ""){
+	if((boardTypeCd == "A" || boardTypeCd == "C") && categoryTypeCd == ""){
 		alert("카테고리를 선택해주세요");
 		$('#categoryTypeCd').focus();
 		return false;
